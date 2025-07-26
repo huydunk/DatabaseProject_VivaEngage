@@ -1,26 +1,62 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div id="app">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark" v-if="isLoggedIn">
+      <div class="container-fluid">
+        <router-link class="navbar-brand" to="/home">VivaEngage</router-link>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <router-link class="nav-link" to="/home">Home</router-link>
+            </li>
+            <li class="nav-item">
+              <router-link class="nav-link" to="/communities">Communities</router-link>
+            </li>
+            <li class="nav-item">
+              <router-link class="nav-link" to="/about">About</router-link>
+            </li>
+          </ul>
+          <span class="navbar-text text-light me-3" v-if="isLoggedIn">Welcome, {{ username }}!</span>
+          <button class="btn btn-outline-light" @click="logout">Logout</button>
+        </div>
+      </div>
+    </nav>
+
+    <router-view />
+  </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-
 export default {
-  name: 'App',
-  components: {
-    HelloWorld
+  data() {
+    return {
+      isLoggedIn: false,
+      username: ''
+    }
+  },
+  mounted() {
+    this.checkLogin()
+  },
+  watch: {
+    $route() {
+      this.checkLogin()
+    }
+  },
+  methods: {
+    checkLogin() {
+      this.isLoggedIn = localStorage.getItem("isLoggedIn") === "true"
+      this.username = localStorage.getItem("username") || ''
+    },
+    logout() {
+      localStorage.removeItem("isLoggedIn")
+      localStorage.removeItem("username")
+      this.isLoggedIn = false
+      this.username = ''
+      this.$router.push("/login")
+    }
   }
 }
-</script>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
+</script>
