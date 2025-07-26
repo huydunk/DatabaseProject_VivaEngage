@@ -1,10 +1,14 @@
 <?php
+require_once '../config.php';
+
+$conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
+
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json");
 
 $communityId = intval($_GET['communityId'] ?? 0);
 
-$conn = new mysqli("localhost", "root", "", "cos20031_project_w11update");
+
 if ($conn->connect_error) {
     http_response_code(500);
     echo json_encode(["message" => "DB error"]);

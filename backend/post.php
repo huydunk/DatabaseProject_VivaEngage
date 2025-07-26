@@ -1,8 +1,9 @@
 <?php
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json");
+require_once '../config.php';
 
-$conn = new mysqli("localhost", "root", "", "cos20031_project_w11update");
+$conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
 
 if ($conn->connect_error) {
     http_response_code(500);
