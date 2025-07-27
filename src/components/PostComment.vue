@@ -10,6 +10,10 @@
                     <small class="text-muted">
                         on {{ comment.createdAt }} last updated at {{ comment.updatedAt }}
                     </small>
+                    <button v-if="isCommentAuthor(comment)" class="btn btn-sm btn-outline-primary ms-2"
+                        @click="openEdit(comment)">
+                        Edit
+                    </button>
                     <button v-if="isCommentAuthor(comment)" class="btn btn-sm btn-outline-danger ms-2"
                         @click="deleteComment(comment.id)">
                         Delete
@@ -28,17 +32,28 @@
             Post Comment
         </button>
     </div> -->
+    <EditCommentModal v-show="showEditModal" :comment-id="editingCommentId" :initial-content="editingContent"
+        :show="showEditModal" @refresh="refreshPosts" @close="closeModal" />
+
+
 </template>
 
 <script>
+import EditCommentModal from './EditCommentModal.vue'
+
+
+
 export default {
+    components: { EditCommentModal },
     props: {
         postId: Number,
         comments: Array
     },
     data() {
         return {
-            newComment: ''
+            editingCommentId: null,
+            editingContent: '',
+            showEditModal: false
         }
     },
     computed: {
@@ -77,6 +92,19 @@ export default {
         },
         isCommentAuthor(comment) {
             return comment.authorId === localStorage.getItem("userId")
+        },
+        openEdit(comment) {
+            this.editingCommentId = comment.id
+            this.editingContent = comment.content
+            this.showEditModal = true
+        },
+        closeModal() {
+            this.showEditModal = false
+            this.editingCommentId = null
+            this.editingContent = ''
+        },
+        refreshPosts() {
+            this.$emit("refreshPosts")
         },
         async deleteComment(commentId) {
             const confirmDelete = confirm("Are you sure you want to delete this comment?")
