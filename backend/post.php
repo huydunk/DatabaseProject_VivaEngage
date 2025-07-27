@@ -6,9 +6,9 @@ require_once '../config.php';
 $conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
 
 if ($conn->connect_error) {
-    http_response_code(500);
-    echo json_encode(["message" => "Database connection failed"]);
-    exit();
+  http_response_code(500);
+  echo json_encode(["message" => "Database connection failed"]);
+  exit();
 }
 
 $communityId = intval($_GET['communityId'] ?? 0);
@@ -30,11 +30,12 @@ $postResult = $conn->query($postSql);
 $posts = [];
 
 while ($post = $postResult->fetch_assoc()) {
-    $postId = $post['id'];
+  $postId = $post['id'];
 
-    // Fetch comments
-    $commentSql = "
+  // Fetch comments
+  $commentSql = "
       SELECT 
+        comment.authorId, 
         comment.content, 
         comment.createdAt, 
         user.username AS author,
@@ -45,38 +46,38 @@ while ($post = $postResult->fetch_assoc()) {
       ORDER BY comment.createdAt ASC
     ";
 
-    $commentResult = $conn->query($commentSql);
-    $comments = [];
+  $commentResult = $conn->query($commentSql);
+  $comments = [];
 
-if ($commentResult) {
+  if ($commentResult) {
     while ($comment = $commentResult->fetch_assoc()) {
-        $comments[] = $comment;
+      $comments[] = $comment;
     }
-}
+  }
 
 
-    // Fetch reaction counts
-    $reactionSql = "
+  // Fetch reaction counts
+  $reactionSql = "
       SELECT reaction, COUNT(*) AS count
       FROM reaction
       WHERE postId = $postId
       GROUP BY reaction
     ";
 
-    $reactionResult = $conn->query($reactionSql);
-    $reactions = [];
+  $reactionResult = $conn->query($reactionSql);
+  $reactions = [];
 
 
-    if ($reactionResult) {
-        while ($reaction = $reactionResult->fetch_assoc()) {
-            $reactions[$reaction['reaction']] = (int) $reaction['count'];
-        }
+  if ($reactionResult) {
+    while ($reaction = $reactionResult->fetch_assoc()) {
+      $reactions[$reaction['reaction']] = (int) $reaction['count'];
     }
+  }
 
-    $post['comments'] = $comments;
-    $post['reactions'] = $reactions;
+  $post['comments'] = $comments;
+  $post['reactions'] = $reactions;
 
-    $posts[] = $post;
+  $posts[] = $post;
 }
 
 echo json_encode($posts);

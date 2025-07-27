@@ -1,11 +1,36 @@
 <template>
   <div class="container mt-4">
-    <h2 class="mb-4">Posts</h2>
+    <div class="card mb-4 shadow-sm">
+      <img v-if="community.coverUrl" :src="community.coverUrl" class="card-img-top" alt="Cover image"
+        style="height: 200px; object-fit: cover" />
+      <div class="card-body">
+        <h2 class="card-title">{{ community.name }}</h2>
+        <p class="text-muted mb-1">
+          Created by {{ community.createdBy }} on {{ community.createdAt }}
+        </p>
+        <p class="text-muted mb-1">
+          Members: {{ community.memberCount }}
+        </p>
+
+        <div v-if="community.members && community.members.length">
+          <h6>Members</h6>
+          <ul class="list-group">
+            <li v-for="member in community.members" :key="member.id"
+              class="list-group-item d-flex justify-content-between align-items-center">
+              {{ member.username }}
+              <span class="badge bg-secondary">{{ member.role }}</span>
+            </li>
+          </ul>
+        </div>
+
+        <p>{{ community.description }}</p>
+      </div>
+    </div>
+
     <div class="card mb-4">
       <div class="card-body">
         <h5 class="card-title">Create a New Post</h5>
         <form @submit.prevent="submitPost">
-
           <div class="mb-3">
             <textarea v-model="newPost.content" class="form-control" rows="3" placeholder="What do you want to share?"
               required></textarea>
@@ -35,19 +60,36 @@ export default {
   components: { CommunityPost },
   data() {
     return {
-      posts: [],
-      loading: true,
-      communityId: this.$route.params.id,
       newPost: {
         title: '',
         content: ''
+      },
+      posts: [],
+      loading: true,
+      communityId: this.$route.params.id,
+      community: {
+        name: '',
+        description: '',
+        coverUrl: '',
+        createdBy: '',
+        createdAt: '',
+        memberCount: 0
       }
     }
   },
-  async mounted() {
-    await this.fetchPosts()
+
+  mounted() {
+    this.fetchCommunity()
+    this.fetchPosts()
   },
+
   methods: {
+    async fetchCommunity() {
+      const res = await fetch(`http://localhost/cos20031_project/backend/community.php?communityId=${this.communityId}`)
+      const data = await res.json()
+      this.community = data
+    },
+
     async fetchPosts() {
       try {
         const res = await fetch(`http://localhost/cos20031_project/backend/post.php?communityId=${this.communityId}`)
@@ -83,7 +125,6 @@ export default {
 
         if (res.ok) {
           alert("Post added!")
-          this.newPost.title = ''
           this.newPost.content = ''
           this.fetchPosts() // refresh post list
         } else {

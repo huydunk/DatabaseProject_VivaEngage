@@ -26,15 +26,8 @@
 
       <!-- Comments -->
       <div v-if="post.comments && post.comments.length" class="mt-3">
-        <h6>Comments</h6>
         <ul class="list-group">
-          <li v-for="(comment, index) in post.comments" :key="index" class="list-group-item">
-            <b>{{ comment.author }}:</b>
-            <p class="mb-1">{{ comment.content }}</p>
-            <small class="text-muted">
-              on {{ comment.createdAt }} (last updated at {{comment.updatedAt}})
-            </small>
-          </li>
+          <PostComment :postId="post.id" :comments="post.comments" @refreshPosts="$emit('refreshPosts')" />
         </ul>
       </div>
     </div>
@@ -42,7 +35,12 @@
 </template>
 
 <script>
+import PostComment from './PostComment.vue'
+
 export default {
+  components: {
+    PostComment
+  },
   data() {
     return {
       newComment: ''
