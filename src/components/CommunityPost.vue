@@ -6,7 +6,9 @@
       <p class="text-muted">
         Posted by <b>{{ post.username }}</b> on {{ post.createdAt }}
       </p>
-
+      <button v-if="isAuthor" @click="deletePost" class="btn btn-sm btn-outline-danger mt-2">
+        Delete Post
+      </button>
       <!-- Reactions -->
       <div v-if="post.reactions && Object.keys(post.reactions).length > 0" class="mb-2">
         <strong>Reactions: </strong>
@@ -19,11 +21,7 @@
       <div v-if="post.comments && post.comments.length" class="mt-3">
         <h6>Comments</h6>
         <ul class="list-group">
-          <li
-            v-for="(comment, index) in post.comments"
-            :key="index"
-            class="list-group-item"
-          >
+          <li v-for="(comment, index) in post.comments" :key="index" class="list-group-item">
             <p class="mb-1">{{ comment.content }}</p>
             <small class="text-muted">
               by {{ comment.author }} on {{ comment.createdAt }}
@@ -39,6 +37,38 @@
 export default {
   props: {
     post: Object
+  },
+  computed: {
+    isAuthor() {
+      const loggedInId = parseInt(localStorage.getItem("userId"))
+      const isAuthor =  loggedInId == parseInt(this.post.authorId);
+      console.log(this.post.authorId);
+      console.log(isAuthor);
+      return isAuthor;
+    }
+  },
+  methods: {
+    async deletePost() {
+      if (!confirm("Are you sure you want to delete this post?")) return;
+
+      const res = await fetch("http://localhost/cos20031_project/backend/delete_post.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          postId: this.post.id,
+          userId: localStorage.getItem("userId")
+        })
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        alert("Post deleted.");
+        this.$emit("refreshPosts"); // tell parent to reload posts
+      } else {
+        alert(data.message || "Failed to delete.");
+      }
+    }
   }
 }
 </script>

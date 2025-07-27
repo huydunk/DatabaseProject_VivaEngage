@@ -22,7 +22,7 @@
         No posts in this community yet.
       </div>
       <div v-else>
-        <CommunityPost v-for="post in posts" :key="post.id" :post="post" />
+        <CommunityPost v-for="post in posts" :key="post.id" :post="post" @refreshPosts="fetchPosts" />
       </div>
     </div>
   </div>

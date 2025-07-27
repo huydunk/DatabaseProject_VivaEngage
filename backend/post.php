@@ -18,7 +18,8 @@ $postSql = "
     post.id,
     post.content,
     post.createdAt,
-    user.username
+    user.username,
+    post.authorId
   FROM post
   JOIN user ON post.authorId = user.id
   WHERE post.communityId = $communityId
