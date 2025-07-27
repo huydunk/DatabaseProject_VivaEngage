@@ -37,7 +37,8 @@ while ($post = $postResult->fetch_assoc()) {
       SELECT 
         comment.content, 
         comment.createdAt, 
-        user.username AS author
+        user.username AS author,
+        comment.updatedAt
       FROM comment
       JOIN user ON comment.authorId = user.id
       WHERE comment.postId = $postId
