@@ -4,12 +4,12 @@
       <h5 class="card-title">{{ post.title }}</h5>
       <p class="card-text">{{ post.content }}</p>
       <p class="text-muted">
-        Posted by {{ post.username }} on {{ post.createdAt }}
+        Posted by <b>{{ post.username }}</b> on {{ post.createdAt }}
       </p>
 
       <!-- Reactions -->
       <div v-if="post.reactions && Object.keys(post.reactions).length > 0" class="mb-2">
-        <strong>Reactions:</strong>
+        <strong>Reactions: </strong>
         <span v-for="(count, type) in post.reactions" :key="type" class="me-2">
           {{ type }} ({{ count }})
         </span>

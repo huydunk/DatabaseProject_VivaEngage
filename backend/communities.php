@@ -20,7 +20,7 @@ if ($conn->connect_error) {
     exit();
 }
 
-$sql = "SELECT id, name, description FROM community";
+$sql = "SELECT id, name, description, coverPicUrl FROM community";
 $result = $conn->query($sql);
 
 $communities = [];

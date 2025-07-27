@@ -10,12 +10,18 @@
         <div v-else class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
             <div class="col" v-for="community in communities" :key="community.id">
                 <div class="card h-100 shadow-sm" @click="goToCommunity(community.id)" style="cursor: pointer;">
+
+                    <!-- Cover Image -->
+                    <img :src="community.coverPicUrl || 'https://via.placeholder.com/400x200?text=No+Image'"
+                        class="card-img-top" alt="Community cover" style="object-fit: cover; height: 200px;" />
+
                     <div class="card-body">
                         <h5 class="card-title">{{ community.name }}</h5>
                         <p class="card-text">{{ community.description }}</p>
                     </div>
                 </div>
             </div>
+
         </div>
     </div>
 </template>
