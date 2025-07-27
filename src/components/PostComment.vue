@@ -10,6 +10,11 @@
                     <small class="text-muted">
                         on {{ comment.createdAt }} last updated at {{ comment.updatedAt }}
                     </small>
+                    <button v-if="isCommentAuthor(comment)" class="btn btn-sm btn-outline-danger ms-2"
+                        @click="deleteComment(comment.id)">
+                        Delete
+                    </button>
+
                 </li>
             </ul>
         </div>
@@ -17,12 +22,12 @@
 
     </div>
     <!-- Add Comment Form -->
-    <div v-if="isLoggedIn" class="mt-3">
+    <!-- <div v-if="isLoggedIn" class="mt-3">
         <textarea v-model="newComment" class="form-control" rows="2" placeholder="Write a comment..."></textarea>
         <button @click="submitComment" class="btn btn-sm btn-primary mt-2">
             Post Comment
         </button>
-    </div>
+    </div> -->
 </template>
 
 <script>
@@ -68,6 +73,32 @@ export default {
                 this.$emit("refreshPosts")
             } else {
                 alert(data.message || "Failed to add comment")
+            }
+        },
+        isCommentAuthor(comment) {
+            return comment.authorId === localStorage.getItem("userId")
+        },
+        async deleteComment(commentId) {
+            const confirmDelete = confirm("Are you sure you want to delete this comment?")
+            if (!confirmDelete) return
+
+            const userId = localStorage.getItem("userId")
+
+            const res = await fetch("http://localhost/cos20031_project/backend/delete_comment.php", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    commentId,
+                    authorId: parseInt(userId)
+                })
+            })
+
+            const data = await res.json()
+
+            if (res.ok) {
+                this.$emit("refreshPosts")
+            } else {
+                alert(data.message || "Failed to delete comment.")
             }
         }
     }

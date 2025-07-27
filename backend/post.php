@@ -35,6 +35,7 @@ while ($post = $postResult->fetch_assoc()) {
   // Fetch comments
   $commentSql = "
       SELECT 
+        comment.id,
         comment.authorId, 
         comment.content, 
         comment.createdAt, 
