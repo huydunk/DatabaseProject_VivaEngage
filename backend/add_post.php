@@ -25,8 +25,6 @@ if (!$content || !$authorId || !$communityId) {
     exit();
 }
 
-$conn = new mysqli("localhost", "root", "", "cos20031_project_w11update");
-
 if ($conn->connect_error) {
     http_response_code(500);
     echo json_encode(["message" => "Database connection failed"]);
