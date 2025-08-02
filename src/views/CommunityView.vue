@@ -26,6 +26,15 @@
         <p>{{ community.description }}</p>
       </div>
     </div>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h4 class="mb-0">Posts</h4>
+      <select v-model="sortOption" class="form-select w-auto">
+        <option value="recent">Most Recent</option>
+        <option value="reactions">Most Reactions</option>
+        <option value="comments">Most Comments</option>
+        <option value="author">Author A-Z</option>
+      </select>
+    </div>
 
     <div class="card mb-4">
       <div class="card-body">
@@ -47,7 +56,8 @@
         No posts in this community yet.
       </div>
       <div v-else>
-        <CommunityPost v-for="post in posts" :key="post.id" :post="post" @refreshPosts="fetchPosts" />
+        <CommunityPost v-for="post in sortedPosts" :key="post.id" :post="post" @refreshPosts="fetchPosts"/>
+
       </div>
     </div>
   </div>
@@ -64,6 +74,7 @@ export default {
         title: '',
         content: ''
       },
+      sortOption: 'recent',
       posts: [],
       loading: true,
       communityId: this.$route.params.id,
@@ -77,7 +88,24 @@ export default {
       }
     }
   },
-
+  computed: {
+    sortedPosts() {
+      return [...this.posts].sort((a, b) => {
+        if (this.sortOption === 'reactions') {
+          const aTotal = this.countReactions(a.reactions)
+          const bTotal = this.countReactions(b.reactions)
+          return bTotal - aTotal
+        } else if (this.sortOption === 'comments') {
+          return b.comments.length - a.comments.length
+        } else if (this.sortOption === 'author') {
+          return a.username.localeCompare(b.username)
+        } else {
+          // default: sort by createdAt descending
+          return new Date(b.createdAt) - new Date(a.createdAt)
+        }
+      })
+    }
+  },
   mounted() {
     this.fetchCommunity()
     this.fetchPosts()
@@ -100,6 +128,9 @@ export default {
       } finally {
         this.loading = false
       }
+    },
+    countReactions(reactions) {
+      return Object.values(reactions || {}).reduce((sum, val) => sum + val, 0)
     },
     async submitPost() {
       const userId = localStorage.getItem("userId")
@@ -127,6 +158,7 @@ export default {
           alert("Post added!")
           this.newPost.content = ''
           this.fetchPosts() // refresh post list
+          this.$emit("refreshPosts")
         } else {
           alert(data.message || "Failed to post.")
         }
