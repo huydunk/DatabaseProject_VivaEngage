@@ -76,45 +76,33 @@ ORDER BY post.createdAt DESC;</code></pre>
     </div>
 
     <div class="mb-4">
-      <h2>Comment of a post</h2>
+      <h2>Get all communities and the total number of Comments in each Community</h2>
       <p>
-        Within <code>post.php</code>, nested inside the loop for posts — retrieves all
-        comments per post along with author info and timestamps.
+        This query fetches each community from the <code>community</code> table and joins it
+        with the <code>post</code> and <code>comment</code> tables to calculate how many total
+        comments exist for posts within each community. If no comments exist, the count will
+        default to 0.
       </p>
+
       <pre><code>SELECT 
-  comment.id,
-  comment.authorId, 
-  comment.content, 
-  comment.createdAt, 
-  user.username AS author,
-  comment.updatedAt
-FROM comment
-JOIN user ON comment.authorId = user.id
-WHERE comment.postId = $postId
-ORDER BY comment.createdAt ASC;</code></pre>
+  c.*, 
+  COALESCE(SUM(CASE WHEN cm.id IS NOT NULL THEN 1 ELSE 0 END), 0) AS totalComments
+FROM community c
+LEFT JOIN post p ON p.communityId = c.id
+LEFT JOIN comment cm ON cm.postId = p.id
+GROUP BY c.id
+ORDER BY c.name ASC;  -- Or any dynamic sort like createdAt or totalComments
+</code></pre>
+
       <p>
-        <strong>Used in:</strong> <code>CommunityView.vue</code> — Comments are rendered
-        under each post using data from the backend, part of <code>fetchPosts()</code>
-        result.
+        <strong>Used in:</strong> <code>CommunitiesView.vue</code> — Used in
+        <code>fetchCommunities()</code> to display a list of all communities with a visible
+        comment count under each card. The total comment count is retrieved as
+        <code>totalComments</code> and can be used to implement sort-by-most-commented
+        functionality.
       </p>
     </div>
 
-    <div class="mb-4">
-      <h2>Reactions of a post</h2>
-      <p>
-        Still in <code>post.php</code>, grouped by reaction type and returned as a
-        key-value dictionary.
-      </p>
-      <pre><code>SELECT reaction, COUNT(*) AS count
-FROM reaction
-WHERE postId = $postId
-GROUP BY reaction;</code></pre>
-      <p>
-        <strong>Used in:</strong> <code>CommunityView.vue</code> — Displayed next to posts
-        using icons (e.g., Like, Love) with reaction counts. No separate function; comes
-        with the main post fetch.
-      </p>
-    </div>
 
     <div class="mb-4">
       <h2>Community Info</h2>
