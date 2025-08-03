@@ -26,11 +26,29 @@ $postSql = "
   ORDER BY post.createdAt DESC
 ";
 
+
 $postResult = $conn->query($postSql);
+
+
+// while ($row = $postResult->fetch_assoc()) {
+//   print_r($row); // View the associative array for each row
+// }
 $posts = [];
 
 while ($post = $postResult->fetch_assoc()) {
   $postId = $post['id'];
+  $attachmentSql = "SELECT id FROM attachment WHERE postId = $postId";
+  // Inside your fetch loop per post
+  $attachmentResults = $conn->query($attachmentSql);
+  $attachments = [];
+
+  if ($attachmentResults) {
+    while ($attachment = $attachmentResults->fetch_assoc()) {
+      $attachments[] = $attachment;
+    }
+  }
+
+  $post['attachments'] = $attachments;
 
   // Fetch comments
   $commentSql = "
