@@ -3,7 +3,7 @@
     <h1 class="mb-3">About This Project</h1>
 
     <p>
-      This website was developed as part of the COS20031 Software Engineering Project.
+      This website was developed as part of the COS20031 Database Design Project.
       It serves as a community discussion platform where users can join groups, create posts,
       and engage in meaningful conversations. The system supports real-time content sharing,
       user authentication, file attachments, and interactive discussions.
