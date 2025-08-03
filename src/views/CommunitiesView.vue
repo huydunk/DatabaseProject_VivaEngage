@@ -8,16 +8,21 @@
         </div>
 
         <div v-else class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-            <select v-model="sortOption" @change="fetchCommunities" class="form-select mb-3">
-                <option value="created_desc">Newest</option>
-                <option value="created_asc">Oldest</option>
-                <option value="alpha_asc">A → Z</option>
-                <option value="alpha_desc">Z → A</option>
-                <option value="comments_desc">Most Comments</option>
-                <option value="comments_asc">Fewest Comments</option>
-            </select>
+            <div>
+                <select v-model="sortOption" @change="fetchCommunities" class="form-select mb-3">
+                    <option value="created_desc">Newest</option>
+                    <option value="created_asc">Oldest</option>
+                    <option value="alpha_asc">A → Z</option>
+                    <option value="alpha_desc">Z → A</option>
+                    <option value="comments_desc">Most Comments</option>
+                    <option value="comments_asc">Fewest Comments</option>
+                </select>
+                <input type="text" v-model="searchQuery" placeholder="Search communities by name..."
+                    class="form-control mb-3" />
+            </div>
 
-            <div class="col" v-for="community in communities" :key="community.id">
+
+            <div v-for="community in filteredCommunities" :key="community.id">
                 <div class="card h-100 shadow-sm" @click="goToCommunity(community.id)" style="cursor: pointer;">
 
                     <!-- Cover Image -->
@@ -43,8 +48,19 @@ export default {
         return {
             communities: [],
             loading: true,
+            searchQuery: '',
             sortOption: 'created_desc',
 
+        }
+    },
+    computed: {
+        filteredCommunities() {
+            if (!this.searchQuery.trim()) return this.communities;
+
+            const query = this.searchQuery.toLowerCase();
+            return this.communities.filter(c =>
+                c.name.toLowerCase().includes(query)
+            );
         }
     },
     mounted() {
