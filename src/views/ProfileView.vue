@@ -37,7 +37,7 @@
           <ul class="list-group list-group-flush">
             <li class="list-group-item"><strong>Email:</strong> {{ user.email }}</li>
             <li class="list-group-item"><strong>Department:</strong> {{ user.departmentId || 'N/A' }}</li>
-            <li class="list-group-item"><strong>Role:</strong> {{ user.roleId }}</li>
+            
             <li class="list-group-item"><strong>Location:</strong> {{ user.location || 'N/A' }}</li>
             <li class="list-group-item"><strong>Last Login:</strong> {{ user.lastLogin }}</li>
           </ul>

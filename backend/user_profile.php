@@ -14,7 +14,7 @@ if ($conn->connect_error) {
 }
 
 // Get basic user info
-$userSql = "SELECT id, username, email, name, roleId, departmentId, profilePicUrl, bio, location, joinDate, status, isVerified, lastLogin, deactivated FROM user WHERE id = $userId";
+$userSql = "SELECT id, username, email, name, departmentId, profilePicUrl, bio, location, joinDate, status, isVerified, lastLogin, deactivated FROM user WHERE id = $userId";
 $userResult = $conn->query($userSql);
 
 if (!$userResult || $userResult->num_rows === 0) {
