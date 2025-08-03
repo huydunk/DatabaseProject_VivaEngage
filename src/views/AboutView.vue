@@ -40,16 +40,16 @@ export default {
           role: 'Lead Developer'
         },
         {
-          name: 'Tran Tuan Huy',
-          id: 's2345678',
-          email: 'brian.tran@student.university.edu',
-          role: 'Backend Developer'
+          name: 'Le Tuan Huy',
+          id: '105557145',
+          email: '105557145@student.swin.edu.au',
+          role: 'Database Manager'
         },
         {
           name: 'Vu Huy Chris',
-          id: 's3456789',
-          email: 'chris.le@student.university.edu',
-          role: 'Database & API Integration'
+          id: '105550047',
+          email: '105550047@student.swin.edu.au',
+          role: 'Jira Manager'
         }
       ]
     };
