@@ -17,6 +17,9 @@
             <li class="nav-item">
               <router-link class="nav-link" to="/about">About</router-link>
             </li>
+            <li class="nav-item">
+              <router-link class="nav-link" to="/profile">My Profile</router-link>
+            </li>
           </ul>
           <span class="navbar-text text-light me-3" v-if="isLoggedIn">Welcome, {{ username }}!</span>
           <button class="btn btn-outline-light" @click="logout">Logout</button>
