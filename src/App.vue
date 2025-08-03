@@ -18,10 +18,11 @@
               <router-link class="nav-link" to="/about">About</router-link>
             </li>
             <li class="nav-item">
-              <router-link class="nav-link" to="/profile">My Profile</router-link>
+              <router-link class="nav-link" :to="'/profile/' + userId">My Profile</router-link>
             </li>
+
           </ul>
-          <span class="navbar-text text-light me-3" v-if="isLoggedIn">Welcome, {{ username }}!</span>
+          <span class="navbar-text text-light me-3" v-if="isLoggedIn">Welcome, #{{userId}} @{{ username }}!</span>
           <button class="btn btn-outline-light" @click="logout">Logout</button>
         </div>
       </div>
@@ -36,6 +37,7 @@ export default {
   data() {
     return {
       isLoggedIn: false,
+      userId: localStorage.getItem("userId"),
       username: ''
     }
   },
@@ -50,6 +52,7 @@ export default {
   methods: {
     checkLogin() {
       this.isLoggedIn = localStorage.getItem("isLoggedIn") === "true"
+      this.userId = localStorage.getItem("userId") || ''
       this.username = localStorage.getItem("username") || ''
     },
     logout() {

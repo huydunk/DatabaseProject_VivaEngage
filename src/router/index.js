@@ -2,7 +2,7 @@ import { createRouter, createWebHashHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import LoginView from '../views/LoginView.vue'
 import CommunitiesView from '../views/CommunitiesView.vue'
-import MyProfileView from '../views/MyProfileView.vue'
+import ProfileView from '../views/ProfileView.vue'
 
 const routes = [
   {
@@ -35,9 +35,9 @@ const routes = [
     component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
   },
   {
-    path: '/profile',
+    path: '/profile/:id',
     name: 'profile',
-    component: MyProfileView
+    component: ProfileView
   }
 ]
 

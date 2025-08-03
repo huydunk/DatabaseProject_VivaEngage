@@ -1,15 +1,21 @@
 <template>
   <div class="card mb-4 shadow-sm">
-    <p class="text-muted">#{{post.id}}</p>
+    <p class="text-muted">#{{ post.id }}</p>
     <div class="card-body">
       <h5 class="card-title">{{ post.title }}</h5>
       <p class="card-text">{{ post.content }}</p>
       <PostAttachment :attachments="post.attachments" />
       <p class="text-muted">
-        Posted by <b>{{ post.username }}</b> on {{ post.createdAt }}
+        Posted by
+        <b>
+          <router-link :to="`/profile/${post.authorId}`">{{ post.authorName }}</router-link> (#{{ post.authorId }}@{{ post.authorUsername }})
+          
+        </b>
+        on {{ post.createdAt }}
       </p>
-      
-      
+
+
+
       <button v-if="isAuthor" @click="deletePost" class="btn btn-sm btn-outline-danger mt-2">
         Delete Post
       </button>

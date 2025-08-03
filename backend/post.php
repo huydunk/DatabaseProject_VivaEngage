@@ -15,15 +15,17 @@ $communityId = intval($_GET['communityId'] ?? 0);
 
 $postSql = "
   SELECT 
-    post.id,
-    post.content,
-    post.createdAt,
-    user.username,
-    post.authorId
-  FROM post
-  JOIN user ON post.authorId = user.id
-  WHERE post.communityId = $communityId
-  ORDER BY post.createdAt DESC
+  post.id,
+  post.content,
+  post.createdAt,
+  post.authorId,
+  user.username AS authorUsername,
+  user.name AS authorName
+FROM post
+JOIN user ON post.authorId = user.id
+WHERE post.communityId = $communityId
+ORDER BY post.createdAt DESC;
+
 ";
 
 
